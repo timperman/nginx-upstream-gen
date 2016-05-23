@@ -1,0 +1,22 @@
+version: '2'
+services:
+  upstream-gen:
+    build:
+      context: .
+    image: btimperman/nginx-upstream-gen
+    volumes_from:
+      - nginx
+    volumes:
+      - ./upstream.tmpl:/etc/upstream-gen/upstream.tmpl:ro
+      - /var/run/docker.sock:/tmp/docker.sock:ro
+  nginx:
+    image: nginx
+    container_name: nginx
+    extra_hosts:
+      - "default-upstream:127.0.0.1"
+    ports:
+      - 80:80
+    volumes:
+      - /etc/nginx/conf.d
+      - /etc/nginx/logs
+      - ./nginx/nginx.conf:/etc/nginx/nginx.conf:ro
